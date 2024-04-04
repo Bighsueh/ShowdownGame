@@ -8,11 +8,16 @@ from typing import List
 
 class Game():
     def __init__(self) -> None:
-        self.players: List[Player]
-        self.turns: int = 1
+        self.players: List[Player] = []
+        self.turns: int
         self.deck: Deck
         self.board: List[tuple[Player,Card]] = []
-        pass
+        
+        self.initTurns()
+        self.initDeck()
+    
+    def initDeck(self) -> None:
+        self.deck = Deck()
     
     def initTurns(self) -> None:
         self.turns = 1
@@ -26,23 +31,27 @@ class Game():
         if playerType == 'real':
             self.players.append(RealPlayer())
         
-    def gameStart(self, players: List[Player])-> None:
+    def gameStart(self)-> None:
         print("遊戲開始：")
         
         index = 1
-        while len(self.players) < 4:
-            try:
-                playerType = input(f"""新增玩家 {index},
-欲新增真實玩家請輸入0, 欲新增電腦玩家請輸入1""")
+        while True:
+            # try:
+            playerType = input(f"""新增玩家 {index},
+欲新增真實玩家請輸入0, 欲新增電腦玩家請輸入1:""")
 
-                if int(playerType) == 0:
-                    self.setPlayer('real')
-                if int(playerType) == 1:
-                    self.setPlayer('pc')
-                
+            if int(playerType) == 0:
+                self.setPlayer('real')
+            if int(playerType) == 1:
+                self.setPlayer('pc')
+            
+            if len(self.players)>= 4:
+                break
+            else:
                 index += 1
-            except:
-                continue
+                
+            # except:
+            #     continue
             
         self.deck.initDeck()
         self.deck.shuffle()    
@@ -54,18 +63,18 @@ class Game():
             self.addTurn(1)
                 
             for player in players:
-                if len(player.hand) < 13:
+                if player.hand.countCards() < 13:
                     card:Card = self.deck.drawCard()
                     player.hand.addCard(card = card)
                     
         for index, player in enumerate(players):
-            handContent = [f'{card.suit}{card.rank},' for card in player.hands]
+            handContent = [f'{card.suit.value[0]} {card.rank.value[0]},' for card in player.hand.cards]
             print(f'玩家{index+1} 手牌為 {handContent}')
         pass
     
     def takeTurn(self,player: Player, otherPlayers: List[Player])-> None:
         # 交換手牌
-        if player.decideToExchange:
+        if player.decideToExchange():
             player.chooseExchangePlayer(otherPlayers)
                 
         # showCard
