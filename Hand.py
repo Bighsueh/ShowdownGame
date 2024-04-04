@@ -6,6 +6,9 @@ class Hand():
         self.cards: List[Card] = []
         self.turnCounter: int = 0
     
+    def countCards(self) -> int:
+        return len(self.cards)
+    
     def showCard(self) -> Card:
         print('當前手牌如下: ')
         for index, card in enumerate(self.cards):
