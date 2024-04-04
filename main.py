@@ -6,5 +6,6 @@ game = Game()
 
 game.initTurns()
 game.gameStart()
-
+game.drawStage(game.players)
+    
     
