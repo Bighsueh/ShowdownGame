@@ -1,5 +1,5 @@
+from __future__ import annotations
 from Hand import Hand
-from player.Player import Player
 from typing import List, Union
 
 class Player:
