@@ -1,5 +1,6 @@
 from __future__ import annotations
 from Hand import Hand
+from Card import Card
 from typing import List, Union
 
 class Player:
@@ -7,7 +8,7 @@ class Player:
         self.point: int = 0
         self.order: int 
         self.name: str = 'nickname'
-        self.hand: Hand
+        self.hand: Hand = None
         self.exchangedTo: Player = None
         
         self.nameItSelf()
@@ -17,6 +18,9 @@ class Player:
         
     def setHand(self)-> None:
         self.hand = Hand()
+        
+    def showCard(self) -> Card:
+        pass
     
     def decideToExchange(self)->bool:
         pass
