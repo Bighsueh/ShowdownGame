@@ -9,7 +9,7 @@ from typing import List
 class Game():
     def __init__(self) -> None:
         self.players: List[Player] = []
-        self.turns: int
+        self.turns: int = 1
         self.deck: Deck
         self.board: List[tuple[Player,Card]] = []
         
@@ -21,6 +21,9 @@ class Game():
     
     def initTurns(self) -> None:
         self.turns = 1
+        
+    def initBoard(self) -> None:
+        self.board = []
         
     def addTurn(self,number)-> None:
         self.turns += number
@@ -40,10 +43,12 @@ class Game():
             playerType = input(f"""新增玩家 {index},
 欲新增真實玩家請輸入0, 欲新增電腦玩家請輸入1:""")
 
-            if int(playerType) == 0:
-                self.setPlayer('real')
             if int(playerType) == 1:
+                print('新增電腦玩家')
                 self.setPlayer('pc')
+            if int(playerType) == 0:
+                print('新增真實玩家')
+                self.setPlayer('real')
             
             if len(self.players)>= 4:
                 break
@@ -58,6 +63,8 @@ class Game():
         pass
     
     def drawStage(self, players: List[Player])-> None:
+        self.initTurns()
+        
         print('抽牌階段')
         while self.turns < 13:
             self.addTurn(1)
@@ -68,7 +75,7 @@ class Game():
                     player.hand.addCard(card = card)
                     
         for index, player in enumerate(players):
-            handContent = [f'{card.suit.value[0]} {card.rank.value[0]},' for card in player.hand.cards]
+            handContent = [f'{card.surface()}' for card in player.hand.cards]
             print(f'玩家{index+1} 手牌為 {handContent}')
         pass
     
@@ -78,13 +85,21 @@ class Game():
             player.chooseExchangePlayer(otherPlayers)
                 
         # showCard
-        card = player.hand.showCard()
+        countCard = player.hand.countCards()
+        if countCard > 0:
+            card = player.showCard()
         
-        self.board.append(player,card)
+            self.board.append([player,card])
+        if countCard <= 0:
+            print(f'玩家{ player.name},手牌為空，跳過本回合')
         pass
     
-    def mainStage(self, players: List[Player])-> None:       
+    def mainStage(self, players: List[Player])-> None:  
+        self.initTurns()
+        
         while self.turns < 13:
+            self.initBoard()
+            print("==============================")
             print(f'第{self.turns}回合:')
             
             # 每個玩家輪流 takeTurn
@@ -100,7 +115,7 @@ class Game():
             print('出牌結果')
             for item in self.board:
                 player, card = item
-                print(f'玩家: {player.name}, {card.suit}{card.rank}')
+                print(f'玩家: {player.name}, {card.surface()}')
                 
             # 比較手牌大小
             print('比較手牌大小')
@@ -110,15 +125,17 @@ class Game():
                 player, card = item
                 value = card.value()
                 
-                if maxScore < card.value() or maxScore == 0:
+                if maxScore < value or maxScore == 0:
                     maxItem = item
+                    maxScore = value
                 
             
             player,card = maxItem
             player.addPoint()
             
-            print(f'本回合獲勝者: {player.name}, {card.suit}{card.rank}')
+            print(f'本回合獲勝者: {player.name}, {card.surface()}')
             self.turns += 1
+            
                     
              
         #  13 回合後，P1~P4 皆已出完全部的牌，遊戲結束。取得最多分數的玩家為勝者，將勝者的名稱顯示出來。
