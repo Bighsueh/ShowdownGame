@@ -29,3 +29,6 @@ class Card():
     
     def value(self)->int:
         return int(self.suit.value[1]) + int(self.rank.value[1])*4
+    
+    def surface(self) -> str:
+        return f"{self.suit.value[0]}{self.rank.value[0]}"
