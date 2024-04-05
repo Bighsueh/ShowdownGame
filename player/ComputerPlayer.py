@@ -1,4 +1,5 @@
 from Hand import Hand
+from Card import Card
 from player.Player import Player
 from typing import List, Union
 import random
@@ -8,10 +9,17 @@ class ComputerPlayer(Player):
         super().__init__()
         
     def nameItSelf(self) -> None:
-        self.name = "pc"
+        self.name = "pc" + str(random.randint(0, 99))
                
     def setHand(self) -> None:
         super().setHand()
+        
+    def showCard(self) -> Card:
+        # 從現有的手牌中隨機出牌
+        card = random.choice(self.hand.cards)
+        self.hand.cards.remove(card)
+    
+        return card
     
     def decideToExchange(self)->bool:
         if not self.exchangedTo == None: return None # 已經交換過，取消交易
@@ -33,6 +41,8 @@ class ComputerPlayer(Player):
             # 設定三回合倒數換牌
             self.hand.setTurnCounter()
             exchangePlayer.hand.setTurnCounter()
+            
+            break 
     
     def exchangeHand(self, player: Player) -> None:
         return super().exchangeHand(player)

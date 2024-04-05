@@ -1,4 +1,5 @@
 from Hand import Hand
+from Card import Card
 from player.Player import Player
 from typing import List, Union
 
@@ -11,6 +12,18 @@ class RealPlayer(Player):
     
     def setHand(self) -> None:
         super().setHand()
+        
+    def showCard(self) -> Card:
+        print('當前手牌如下: ')
+        for index, card in enumerate(self.hand.cards):
+            print(f'{index} => {card.suit.value[0]}{card.rank.value[0]}')
+        
+        cardIndex = int(input('請輸入欲出牌的編號: '))
+        
+        card = self.hand.cards[cardIndex]
+        self.hand.cards.remove(card)
+        
+        return card
     
     def decideToExchange(self)->bool:
         if not self.exchangedTo == None: return False # 已經交換過，取消交易
@@ -18,7 +31,8 @@ class RealPlayer(Player):
         print('請問執行動作“指定玩家並與其交換手牌”嗎？')
         while True:
             try:
-                return bool(input('請輸入True或False:'))
+                exchange:str = input(f"""欲交換則輸入 1, 不交換則輸入0""")
+                return  int(exchange) == 1
             except:
                 continue
     
